@@ -10,7 +10,7 @@ import { getGuestNameFromPath } from "./weddingConfig";
  * Accents: Green
  */
 
-const backgroundMusic = "/hathara-kendare-shihan-mihiranga.mp3";
+const backgroundMusic = "/background-music.mp3";
 
 const flowerImage = "/green_orchid.png";
 const flowerCornerImage = "/green_orchid_corner.png";
@@ -318,7 +318,7 @@ export default function WeddingInvitation() {
       className={`h-[100dvh] w-full bg-[#FFFFFF] transition-all duration-1000 ${isOpened ? "overflow-y-auto overflow-x-hidden smooth-mobile-scroll" : "overflow-hidden flex items-center justify-center"
         } relative font-montserrat scroll-smooth`}
     >
-      <audio ref={audioRef} src={backgroundMusic} loop />
+      <audio ref={audioRef} src={backgroundMusic} loop preload="auto" />
       {isOpened && (
         <>
           <MandalaFrame minimal={isLowPerformanceMode} />
