@@ -17,6 +17,33 @@
   --color-lavender: #d3bedf;
   --color-sky: #c0d1e5;
 
+  --color-peach-50: #FFFAF2;
+  --color-peach-100: #FEF1DC;
+  --color-peach-200: #FADDAF;
+  --color-peach-300: #F2C485;
+  --color-peach-400: #E3A85E;
+  --color-peach-500: #C98A3F;
+  --color-peach-600: #A26C2E;
+  --color-peach-700: #7A5123;
+
+  --color-lavender-50: #F9F5FB;
+  --color-lavender-100: #F0E8F5;
+  --color-lavender-200: #D3BEDF;
+  --color-lavender-300: #BBA0CC;
+  --color-lavender-400: #9F80B5;
+  --color-lavender-500: #82639A;
+  --color-lavender-600: #664C7B;
+  --color-lavender-700: #4B385B;
+
+  --color-sky-50: #F5F8FC;
+  --color-sky-100: #E6EEF7;
+  --color-sky-200: #C0D1E5;
+  --color-sky-300: #9CB6D4;
+  --color-sky-400: #7898BE;
+  --color-sky-500: #5A7AA2;
+  --color-sky-600: #445E80;
+  --color-sky-700: #33465F;
+
   /* Primary scale built around blush pink; darker steps keep text readable */
   --color-theme-50: #FDF5F7;
   --color-theme-100: #FBE8EC;

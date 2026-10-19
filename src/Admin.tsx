@@ -134,7 +134,7 @@ export default function Admin() {
 
           <button
             type="submit"
-            className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-theme-800 hover:bg-theme-900 text-white py-3.5 text-xs font-bold uppercase tracking-[0.25em] transition-colors"
+            className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-theme-700 hover:bg-theme-800 text-white py-3.5 text-xs font-bold uppercase tracking-[0.25em] transition-colors"
           >
             <LinkIcon className="w-4 h-4" />
             Generate Link
@@ -183,7 +183,7 @@ export default function Admin() {
               type="button"
               disabled={!generated}
               onClick={() => generated && handleCopy(generated.message, "Message copied!")}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-theme-600 hover:bg-theme-700 text-white py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-theme-600"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-lavender-600 hover:bg-lavender-700 text-white py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-lavender-600"
             >
               <MessageCircle className="w-4 h-4" />
               Copy Full Message
