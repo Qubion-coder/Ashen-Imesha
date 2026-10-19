@@ -88,17 +88,17 @@ export default function Admin() {
   const previewName = buildDisplayName(prefix, guestName);
 
   return (
-    <main className="h-[100dvh] w-full overflow-y-auto bg-theme-50 font-montserrat text-stone-800">
+    <main className="h-[100dvh] w-full overflow-y-auto bg-theme-50 font-montserrat text-theme-800">
       <div className="mx-auto w-full max-w-2xl px-4 py-10 md:py-16">
         <header className="text-center mb-8 md:mb-10">
           <p className="text-[10px] uppercase tracking-[0.4em] text-theme-600 font-bold mb-3">Admin · Invitation Links</p>
           <h1 className="font-playball text-5xl md:text-6xl text-theme-900">{GROOM_NAME} & {BRIDE_NAME}</h1>
         </header>
 
-        <form onSubmit={handleGenerate} className="bg-white rounded-3xl border border-theme-100 shadow-[0_20px_50px_-25px_rgba(45,58,52,0.35)] p-5 sm:p-8 space-y-5">
+        <form onSubmit={handleGenerate} className="bg-white rounded-3xl border border-theme-100 shadow-[0_20px_50px_-25px_rgba(100,53,69,0.35)] p-5 sm:p-8 space-y-5">
           <div className="grid gap-5 sm:grid-cols-[160px_1fr]">
             <label className="flex flex-col gap-2">
-              <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-stone-500">Prefix</span>
+              <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-theme-500">Prefix</span>
               <select
                 value={prefix}
                 onChange={(e) => setPrefix(e.target.value as Prefix)}
@@ -111,7 +111,7 @@ export default function Admin() {
             </label>
 
             <label className="flex flex-col gap-2">
-              <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-stone-500">Guest Name</span>
+              <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-theme-500">Guest Name</span>
               <input
                 type="text"
                 value={guestName}
@@ -122,11 +122,11 @@ export default function Admin() {
             </label>
           </div>
 
-          <p className="text-xs text-stone-500 min-h-[1rem]">
+          <p className="text-xs text-theme-500 min-h-[1rem]">
             {previewName ? (
               <>Greeting preview: <span className="font-semibold text-theme-800">Dear {previewName} ❤️</span></>
             ) : error ? (
-              <span className="text-red-600">{error}</span>
+              <span className="text-theme-700">{error}</span>
             ) : (
               "Enter a name to see the greeting."
             )}
@@ -141,9 +141,9 @@ export default function Admin() {
           </button>
         </form>
 
-        <section className="mt-6 bg-white rounded-3xl border border-theme-100 shadow-[0_20px_50px_-25px_rgba(45,58,52,0.35)] p-5 sm:p-8 space-y-5">
+        <section className="mt-6 bg-white rounded-3xl border border-theme-100 shadow-[0_20px_50px_-25px_rgba(100,53,69,0.35)] p-5 sm:p-8 space-y-5">
           <div className="space-y-2">
-            <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-stone-500">Generated Link</p>
+            <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-theme-500">Generated Link</p>
             {generated ? (
               <a
                 href={generated.link}
@@ -154,7 +154,7 @@ export default function Admin() {
                 {generated.link}
               </a>
             ) : (
-              <p className="rounded-xl bg-stone-50 border border-dashed border-stone-200 px-3 py-3 text-sm text-stone-400">
+              <p className="rounded-xl bg-theme-50 border border-dashed border-theme-200 px-3 py-3 text-sm text-theme-400">
                 Click “Generate Link” to create a personalised invitation.
               </p>
             )}
@@ -162,8 +162,8 @@ export default function Admin() {
 
           {generated && (
             <div className="space-y-2">
-              <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-stone-500">Message Preview</p>
-              <pre className="whitespace-pre-wrap break-words rounded-xl bg-theme-50 border border-theme-100 px-4 py-4 text-sm leading-relaxed font-montserrat text-stone-700">
+              <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-theme-500">Message Preview</p>
+              <pre className="whitespace-pre-wrap break-words rounded-xl bg-theme-50 border border-theme-100 px-4 py-4 text-sm leading-relaxed font-montserrat text-theme-700">
                 {generated.message}
               </pre>
             </div>
