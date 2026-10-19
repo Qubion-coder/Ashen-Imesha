@@ -4,17 +4,17 @@ import { Sparkles, MapPin, Calendar, Clock } from "lucide-react";
 import { getGuestNameFromPath } from "./weddingConfig";
 
 /**
- * Premium Green & White Wedding Invitation Theme
+ * Premium Pastel Wedding Invitation Theme
  * Names: Ashen & Imesha
  * Background: White
- * Accents: Green
+ * Accents: Pastel blush, peach, lavender & sky
  */
 
 const backgroundMusic = "/background-music.mp3";
 
-const flowerImage = "/green_orchid.png";
-const flowerCornerImage = "/green_orchid_corner.png";
-const flowerArchImage = "/green_orchid_arch.png";
+const flowerImage = "/pastel_orchid.png";
+const flowerCornerImage = "/pastel_orchid_corner.png";
+const heroBackgroundImage = "/hero-bg.jpg";
 const brideGroomImage = "/gallery/photo-1.jpg";
 const galleryImages = [
   "/gallery/photo-3.jpg",
@@ -90,7 +90,7 @@ function FloatingPetals({ disabled = false }: { disabled?: boolean }) {
       return;
     }
 
-    const colors = ["#D1FAE5", "#A7F3D0", "#6EE7B7", "#ECFDF5", "#6B8A7A"];
+    const colors = ["#f7ccd5", "#faddaf", "#d3bedf", "#c0d1e5", "#FDF5F7"];
     const petalCount = isMobile ? 10 : 18;
     const newPetals = Array.from({ length: petalCount }).map((_, i) => ({
       id: i,
@@ -115,7 +115,7 @@ function FloatingPetals({ disabled = false }: { disabled?: boolean }) {
       {petals.map((petal) => (
         <motion.div
           key={petal.id}
-          className="absolute drop-shadow-[0_2px_6px_rgba(192,192,192,0.5)]"
+          className="absolute drop-shadow-[0_2px_6px_rgba(247,204,213,0.6)]"
           style={{ color: petal.color }}
           initial={{
             x: `${petal.x}vw`,
@@ -275,12 +275,60 @@ export default function WeddingInvitation() {
   };
 
 
+  // True once the guest has started the music; used to resume it whenever the browser pauses it.
+  const shouldPlayMusicRef = React.useRef(false);
+
+  const playMusic = React.useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio || !shouldPlayMusicRef.current || !audio.paused) return;
+    audio.play().catch(e => console.log("Audio play failed", e));
+  }, []);
+
   const openInvitation = () => {
     setIsOpened(true);
-    if (audioRef.current) {
-      audioRef.current.play().catch(e => console.log("Audio play failed", e));
-    }
+    shouldPlayMusicRef.current = true;
+    playMusic();
   };
+
+  // Keep background music going: mobile browsers pause audio on screen lock / app switch,
+  // and short looping clips can occasionally stall at the loop point.
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const restartFromBeginning = () => {
+      audio.currentTime = 0;
+      playMusic();
+    };
+    const recoverFromError = () => {
+      audio.load();
+      playMusic();
+    };
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") playMusic();
+    };
+
+    audio.addEventListener("ended", restartFromBeginning);
+    audio.addEventListener("stalled", playMusic);
+    audio.addEventListener("error", recoverFromError);
+    document.addEventListener("visibilitychange", handleVisibility);
+    window.addEventListener("pageshow", playMusic);
+    window.addEventListener("focus", playMusic);
+    // Any tap resumes playback if the browser blocked the automatic resume.
+    window.addEventListener("pointerdown", playMusic);
+    window.addEventListener("touchend", playMusic);
+
+    return () => {
+      audio.removeEventListener("ended", restartFromBeginning);
+      audio.removeEventListener("stalled", playMusic);
+      audio.removeEventListener("error", recoverFromError);
+      document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("pageshow", playMusic);
+      window.removeEventListener("focus", playMusic);
+      window.removeEventListener("pointerdown", playMusic);
+      window.removeEventListener("touchend", playMusic);
+    };
+  }, [playMusic]);
 
   useEffect(() => {
     const motionMedia = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -438,52 +486,43 @@ export default function WeddingInvitation() {
             </motion.button>
 
             {/* Hero Section */}
-            <section className="min-h-[100dvh] w-full flex items-center justify-center p-4 md:p-12 relative overflow-hidden bg-[#FFFFFF]">
-              {/* Background texture */}
-              <div className="absolute inset-0 opacity-[0.03] paper-grain" />
+            <section className="h-[100dvh] min-h-[560px] w-full flex items-center justify-center relative overflow-hidden bg-[#F8ECE8]">
+              {/* Soft blurred fill so wide screens have no empty sides */}
+              <div
+                className="absolute inset-0 bg-cover bg-center scale-110 blur-2xl opacity-60 pointer-events-none"
+                style={{ backgroundImage: `url(${heroBackgroundImage})` }}
+                aria-hidden="true"
+              />
 
-              {/* Large Watermark Monogram */}
+              {/* Hero background frame (the image carries its own arch and orchids) */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 0.03, scale: 1 }}
-                transition={{ duration: 2, ease: "easeOut" }}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-cinzel text-[40vw] text-theme-900 pointer-events-none whitespace-nowrap leading-none select-none z-0"
-              >
-                A&I
-              </motion.div>
-
-              {/* Central Premium Arch Card */}
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.2, delay: 0.2, ease: [0.25, 1, 0.5, 1] }}
-                className="relative z-10 w-full max-w-[420px] min-h-[500px] h-[85vh] md:h-[80vh] bg-[#ffffff] rounded-t-full shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] border border-theme-100 flex flex-col items-center overflow-hidden p-6 pt-12 md:p-10 md:pt-16"
+                className="relative z-10 h-full aspect-[865/1818] max-w-full md:shadow-[0_30px_80px_-20px_rgba(199,116,137,0.35)]"
               >
-                {/* Arch outline decoration */}
-                <div className="absolute inset-3 sm:inset-5 border-[0.5px] border-theme-400/40 rounded-t-full pointer-events-none" />
-                <div className="absolute inset-4 sm:inset-6 border border-theme-200/40 rounded-t-full pointer-events-none" />
+                <InviteImage
+                  src={heroBackgroundImage}
+                  alt=""
+                  eager
+                  className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+                />
 
-                {/* Top Circle Arch Floral Arrangement */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[320px] h-auto z-20 pointer-events-none -translate-y-4">
-                  <InviteImage
-                    src={flowerArchImage}
-                    alt=""
-                    eager
-                    className="w-full h-auto object-contain drop-shadow-[0_8px_15px_rgba(0,0,0,0.15)]"
-                  />
-                </div>
-
-                <div className="mb-10" />
-
-                <div className="flex flex-col items-center text-center space-y-4 flex-1 w-full relative z-10">
-                  <div className="mb-4" />
-
-                  <div className="space-y-0 py-4 flex-1 flex flex-col justify-center">
+                <div className="absolute inset-x-[12%] top-[20%] bottom-[16%] flex flex-col items-center justify-between text-center">
+                  <div className="flex-1 flex flex-col justify-center">
+                    <motion.p
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.8, duration: 0.8 }}
+                      className="text-[9px] md:text-[11px] uppercase tracking-[0.5em] text-[#A85A70] font-bold mb-4 md:mb-6"
+                    >
+                      The Wedding Of
+                    </motion.p>
                     <motion.h1
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 1, duration: 0.8 }}
-                      className="font-playball text-[3rem] sm:text-[3.5rem] md:text-[5rem] text-stone-800 leading-[1.1] drop-shadow-sm"
+                      className="font-playball text-[3rem] sm:text-[3.5rem] md:text-[4.5rem] text-stone-800 leading-[1.1] drop-shadow-sm"
                     >
                       Ashen
                     </motion.h1>
@@ -491,7 +530,7 @@ export default function WeddingInvitation() {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 1.2, duration: 0.5 }}
-                      className="font-playball text-3xl md:text-5xl text-theme-500 italic font-light my-2 md:my-4 tracking-widest"
+                      className="font-playball text-3xl md:text-5xl text-[#C77489] italic font-light my-1 md:my-3 tracking-widest"
                     >
                       &
                     </motion.div>
@@ -499,7 +538,7 @@ export default function WeddingInvitation() {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 1.4, duration: 0.8 }}
-                      className="font-playball text-[3rem] sm:text-[3.5rem] md:text-[5rem] text-stone-800 leading-[1.1] drop-shadow-sm"
+                      className="font-playball text-[3rem] sm:text-[3.5rem] md:text-[4.5rem] text-stone-800 leading-[1.1] drop-shadow-sm"
                     >
                       Imesha
                     </motion.h1>
@@ -508,9 +547,9 @@ export default function WeddingInvitation() {
                       initial={{ opacity: 0, y: 15 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 1.8, duration: 1 }}
-                      className="mt-6 md:mt-10"
+                      className="mt-6 md:mt-8"
                     >
-                      <span className="inline-block text-[10px] md:text-[13px] uppercase tracking-[0.6em] md:tracking-[0.8em] text-zinc-800 font-bold px-5 py-2 rounded-full bg-theme-100/40 border border-theme-200/30">
+                      <span className="inline-block text-[9px] md:text-[12px] uppercase tracking-[0.5em] md:tracking-[0.6em] text-stone-800 font-bold px-5 py-2 rounded-full bg-white/60 backdrop-blur-sm border border-[#F7CCD5]">
                         Please join us
                       </span>
                     </motion.div>
@@ -520,16 +559,16 @@ export default function WeddingInvitation() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 1.8, duration: 1 }}
-                    className="mt-auto pb-4 w-full flex flex-col items-center"
+                    className="w-full flex flex-col items-center"
                   >
-                    <div className="flex items-center justify-center gap-4 mb-6 opacity-70 w-full px-8">
-                      <div className="h-px w-full bg-gradient-to-r from-transparent via-theme-300 to-theme-400" />
-                      <div className="w-1.5 h-1.5 rotate-45 bg-theme-500 shrink-0" />
-                      <div className="h-px w-full bg-gradient-to-l from-transparent via-theme-300 to-theme-400" />
+                    <div className="flex items-center justify-center gap-4 mb-4 opacity-80 w-full px-6">
+                      <div className="h-px w-full bg-gradient-to-r from-transparent to-[#EDB0BE]" />
+                      <div className="w-1.5 h-1.5 rotate-45 bg-[#C77489] shrink-0" />
+                      <div className="h-px w-full bg-gradient-to-l from-transparent to-[#EDB0BE]" />
                     </div>
                     <div className="font-cinzel space-y-1">
                       <p className="text-sm md:text-base text-stone-700 tracking-[0.2em] md:tracking-[0.3em] font-bold">2026.12.12</p>
-                      <p className="text-[8px] md:text-[9px] text-theme-600 tracking-[0.2em] uppercase font-bold">Ramadia Grand, Moratuwa</p>
+                      <p className="text-[8px] md:text-[9px] text-[#A85A70] tracking-[0.2em] uppercase font-bold">Ramadia Grand, Moratuwa</p>
                     </div>
                   </motion.div>
                 </div>
@@ -541,12 +580,12 @@ export default function WeddingInvitation() {
                 transition={{ delay: 2.2, duration: 1 }}
                 className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer z-20 group"
               >
-                <span className="text-[8px] md:text-[9px] uppercase tracking-widest text-stone-400 font-bold group-hover:text-theme-600 transition-colors">Begin</span>
-                <div className="w-px h-10 md:h-12 relative overflow-hidden bg-stone-200">
+                <span className="text-[8px] md:text-[9px] uppercase tracking-widest text-[#A85A70] font-bold">Begin</span>
+                <div className="w-px h-10 md:h-12 relative overflow-hidden bg-white/60">
                   <motion.div
                     animate={{ y: [-40, 60] }}
                     transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                    className="w-full h-8 bg-theme-500"
+                    className="w-full h-8 bg-[#C77489]"
                   />
                 </div>
               </motion.div>
@@ -556,7 +595,7 @@ export default function WeddingInvitation() {
             {/* Wedding Details Section */}
             <section className="cv-auto py-24 md:py-32 w-full flex flex-col items-center px-4 relative">
               <div className="section-floral-overlay absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
-                {/* Green Orchid Corners */}
+                {/* Pastel Orchid Corners */}
                 <InviteImage src={flowerCornerImage} className="absolute -left-16 -top-16 w-[280px] md:w-[450px] h-auto opacity-40 object-contain -rotate-90" alt="" />
                 <InviteImage src={flowerCornerImage} className="absolute -right-16 -top-16 w-[280px] md:w-[450px] h-auto opacity-40 object-contain rotate-0" alt="" />
                 <InviteImage src={flowerCornerImage} className="absolute -left-16 -bottom-16 w-[280px] md:w-[450px] h-auto opacity-40 object-contain rotate-180" alt="" />
@@ -596,7 +635,7 @@ export default function WeddingInvitation() {
                   className="relative mb-10 md:mb-14"
                 >
                   <div className="absolute -inset-3 md:-inset-4 rounded-[2rem] bg-theme-200/35 blur-xl" />
-                  <div className="relative bg-white/90 p-2.5 md:p-3 rounded-[2rem] border border-theme-200 shadow-[0_20px_50px_-20px_rgba(75,85,99,0.45)]">
+                  <div className="relative bg-white/90 p-2.5 md:p-3 rounded-[2rem] border border-theme-200 shadow-[0_20px_50px_-20px_rgba(100,53,69,0.35)]">
                     <InviteImage
                       src={brideGroomImage}
                       alt="Ashen and Imesha"
@@ -704,7 +743,7 @@ export default function WeddingInvitation() {
             </section>
 
             {/* Gallery Section */}
-            <section className="cv-auto py-20 md:py-28 w-full flex flex-col items-center px-4 relative bg-[#FFFFFF]">
+            <section className="cv-auto py-20 md:py-28 w-full flex flex-col items-center px-4 relative bg-gradient-to-b from-white via-lavender/20 to-white">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -724,7 +763,7 @@ export default function WeddingInvitation() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1, duration: 0.7 }}
-                    className={`relative overflow-hidden bg-theme-50 border border-theme-100 shadow-[0_20px_40px_-20px_rgba(45,58,52,0.35)] ${i % 2 === 0 ? "rounded-t-full rounded-b-2xl" : "rounded-2xl md:mt-12"}`}
+                    className={`relative overflow-hidden bg-theme-50 border border-theme-100 shadow-[0_20px_40px_-20px_rgba(100,53,69,0.25)] ${i % 2 === 0 ? "rounded-t-full rounded-b-2xl" : "rounded-2xl md:mt-12"}`}
                   >
                     <InviteImage src={src} alt="Ashen and Imesha" className="w-full aspect-[2/3] object-cover transition-transform duration-[1.5s] hover:scale-105" />
                   </motion.div>
@@ -736,17 +775,17 @@ export default function WeddingInvitation() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
-                className="w-full max-w-5xl mt-3 md:mt-5 overflow-hidden rounded-2xl md:rounded-[2rem] border border-theme-100 shadow-[0_20px_40px_-20px_rgba(45,58,52,0.35)]"
+                className="w-full max-w-5xl mt-3 md:mt-5 overflow-hidden rounded-2xl md:rounded-[2rem] border border-theme-100 shadow-[0_20px_40px_-20px_rgba(100,53,69,0.25)]"
               >
                 <InviteImage src={galleryWideImage} alt="Ashen and Imesha on the beach" className="w-full h-auto object-cover" />
               </motion.div>
             </section>
 
             {/* Countdown Section */}
-            <section className="cv-auto py-24 md:py-36 bg-[#F9FAFB] relative border-y border-theme-100/30 flex flex-col items-center overflow-hidden">
+            <section className="cv-auto py-24 md:py-36 bg-gradient-to-br from-blush/40 via-peach/30 to-sky/40 relative border-y border-theme-100/30 flex flex-col items-center overflow-hidden">
               {/* Premium Background Elements */}
               <div className="absolute inset-0 opacity-[0.03] paper-grain pointer-events-none" />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] aspect-square bg-theme-100 blur-[120px] rounded-full opacity-30 pointer-events-none" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] aspect-square bg-lavender blur-[120px] rounded-full opacity-30 pointer-events-none" />
 
               <div className="w-full max-w-[1000px] px-4 flex flex-col items-center text-center relative z-10">
                 <motion.div
@@ -785,7 +824,8 @@ export default function WeddingInvitation() {
             <section className="cv-auto py-24 md:py-36 bg-[#FFFFFF] relative overflow-hidden">
               {/* Decorative Background */}
               <div className="absolute inset-0 opacity-5 paper-grain pointer-events-none" />
-              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-theme-200 blur-[150px] rounded-full opacity-20 pointer-events-none" />
+              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-peach blur-[150px] rounded-full opacity-40 pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-sky blur-[150px] rounded-full opacity-30 pointer-events-none" />
 
               <div className="container mx-auto px-6 max-w-6xl relative z-10">
                 <div className="grid md:grid-cols-2 gap-16 md:gap-24 items-center">
@@ -869,11 +909,11 @@ export default function WeddingInvitation() {
             </section>
 
             {/* RSVP Section */}
-            <section className="cv-auto py-24 md:py-36 bg-[#18181B] text-white relative overflow-hidden flex flex-col items-center">
+            <section className="cv-auto py-24 md:py-36 bg-[#3A2532] text-white relative overflow-hidden flex flex-col items-center">
               {/* Opulent dark background */}
               <div className="absolute inset-0 opacity-10 paper-grain pointer-events-none" />
-              <div className="absolute top-0 right-0 w-[60vw] h-[60vw] max-w-[800px] bg-theme-800 blur-[150px] rounded-full opacity-30 pointer-events-none" />
-              <div className="absolute bottom-0 left-0 w-[60vw] h-[60vw] max-w-[800px] bg-theme-900 blur-[150px] rounded-full opacity-40 pointer-events-none" />
+              <div className="absolute top-0 right-0 w-[60vw] h-[60vw] max-w-[800px] bg-lavender blur-[150px] rounded-full opacity-25 pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-[60vw] h-[60vw] max-w-[800px] bg-sky blur-[150px] rounded-full opacity-20 pointer-events-none" />
 
               <div className="container mx-auto px-4 max-w-2xl text-center relative z-10 w-full">
                 <motion.div
@@ -890,7 +930,7 @@ export default function WeddingInvitation() {
                     <div className="h-px w-16 md:w-24 bg-gradient-to-l from-transparent to-theme-300" />
                   </div>
                   <p className="text-stone-300 text-sm md:text-base max-w-md mx-auto leading-relaxed mb-16 tracking-wide font-light">
-                    We would be absolutely thrilled to celebrate with you. Kindly respond by the end of November.
+                    We would be absolutely thrilled to celebrate with you. Kindly respond on or before 25th November 2026.
                   </p>
 
                   {/* Premium RSVP Form */}
@@ -916,11 +956,11 @@ export default function WeddingInvitation() {
                             onChange={(e) => setRsvpData({ ...rsvpData, guests: e.target.value })}
                             className="w-full bg-transparent border-b border-white/20 px-2 py-3 text-white focus:outline-none focus:border-theme-300 transition-colors font-cinzel text-lg md:text-xl tracking-wide appearance-none cursor-pointer"
                           >
-                            <option value="1" className="bg-[#18181B] text-white">1 Guest (Just Me)</option>
-                            <option value="2" className="bg-[#18181B] text-white">2 Guests</option>
-                            <option value="3" className="bg-[#18181B] text-white">3 Guests</option>
-                            <option value="4" className="bg-[#18181B] text-white">4 Guests</option>
-                            <option value="0" className="bg-[#18181B] text-theme-300">Regretfully Decline</option>
+                            <option value="1" className="bg-[#3A2532] text-white">1 Guest (Just Me)</option>
+                            <option value="2" className="bg-[#3A2532] text-white">2 Guests</option>
+                            <option value="3" className="bg-[#3A2532] text-white">3 Guests</option>
+                            <option value="4" className="bg-[#3A2532] text-white">4 Guests</option>
+                            <option value="0" className="bg-[#3A2532] text-theme-300">Regretfully Decline</option>
                           </select>
                           <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                             <div className="w-2 h-2 border-r border-b border-theme-300 rotate-45 transform -translate-y-[25%]" />
@@ -1032,7 +1072,7 @@ export default function WeddingInvitation() {
                         transition={{ duration: 0.9, ease: "easeOut" }}
                         src={flowerImage}
                         alt=""
-                        className="relative z-10 mt-8 w-40 h-40 md:w-56 md:h-56 object-contain drop-shadow-[0_12px_24px_rgba(107,138,122,0.3)]"
+                        className="relative z-10 mt-8 w-40 h-40 md:w-56 md:h-56 object-contain drop-shadow-[0_12px_24px_rgba(211,190,223,0.6)]"
                       />
                     </div>
                   </motion.div>
@@ -1075,7 +1115,7 @@ export default function WeddingInvitation() {
           background: #FFFFFF;
         }
         ::-webkit-scrollbar-thumb {
-          background: #6B8A7A;
+          background: #DC8FA2;
           border-radius: 10px;
         }
       `}} />

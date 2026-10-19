@@ -11,27 +11,34 @@
   --color-sage: #C0C0C0;
   --color-paper: #FFFFFF;
 
-  --color-theme-50: #F7F9F7;
-  --color-theme-100: #E3EAE4;
-  --color-theme-200: #C9D6CC;
-  --color-theme-300: #A9BDB0;
-  --color-theme-400: #89A394;
-  --color-theme-500: #6B8A7A;
-  --color-theme-600: #556E62;
-  --color-theme-700: #41544B;
-  --color-theme-800: #2D3A34;
-  --color-theme-900: #19211D;
+  /* Pastel palette */
+  --color-blush: #f7ccd5;
+  --color-peach: #faddaf;
+  --color-lavender: #d3bedf;
+  --color-sky: #c0d1e5;
+
+  /* Primary scale built around blush pink; darker steps keep text readable */
+  --color-theme-50: #FDF5F7;
+  --color-theme-100: #FBE8EC;
+  --color-theme-200: #F7CCD5;
+  --color-theme-300: #EDB0BE;
+  --color-theme-400: #DC8FA2;
+  --color-theme-500: #C77489;
+  --color-theme-600: #A85A70;
+  --color-theme-700: #864659;
+  --color-theme-800: #643545;
+  --color-theme-900: #432430;
 }
 
 .green-border {
-  border: 2px solid #6B8A7A;
+  border: 2px solid #C77489;
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.4),
-    inset 0 0 10px rgba(107, 138, 122, 0.3);
+    inset 0 0 10px rgba(199, 116, 137, 0.3);
 }
 
 .green-text {
-  background: linear-gradient(135deg, #41544B 0%, #89A394 50%, #41544B 100%);
+  background: linear-gradient(135deg, #864659 0%, #DC8FA2 50%, #864659 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: bold;
