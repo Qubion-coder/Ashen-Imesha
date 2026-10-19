@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, MapPin, Calendar, Clock } from "lucide-react";
-import { getGuestNameFromPath } from "./weddingConfig";
+import { getGuestNameFromPath, RSVP_SCRIPT_URL } from "./weddingConfig";
 
 /**
  * Premium Pastel Wedding Invitation Theme
@@ -218,7 +218,7 @@ function CountdownTimer() {
   );
 }
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzw7z6J7oKXO7DjtNQYldCF5TzAO4bwNju0m-ICagsUjmrsnxQOJ4mCNcpW_b8QOS2/exec";
+const SCRIPT_URL = RSVP_SCRIPT_URL;
 
 export default function WeddingInvitation() {
   const [isOpened, setIsOpened] = useState(false);
@@ -234,7 +234,7 @@ export default function WeddingInvitation() {
 
   const handleSubmit = async (formName: "rsvp" | "wish", data: any) => {
     if (!SCRIPT_URL) {
-      alert("Please configure the SCRIPT_URL in App.tsx to enable form submissions.");
+      alert("Please configure RSVP_SCRIPT_URL in src/weddingConfig.ts to enable form submissions.");
       return;
     }
 
@@ -244,6 +244,7 @@ export default function WeddingInvitation() {
     try {
       const params = new URLSearchParams();
       params.append("formName", formName);
+      if (guestName) params.append("Invited As", guestName);
 
       // Explicit mapping of keys to Sheet Headers
       const fieldMapping: Record<string, string> = {
