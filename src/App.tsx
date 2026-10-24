@@ -10,7 +10,7 @@ import { getGuestNameFromPath, RSVP_SCRIPT_URL } from "./weddingConfig";
  * Accents: Pastel blush, peach, lavender & sky
  */
 
-const backgroundMusic = "/background-music.mp3";
+const backgroundMusic = "/wedding-song.mp3";
 
 const flowerImage = "/pastel_orchid.png";
 const flowerCornerImage = "/pastel_orchid_corner.png";
