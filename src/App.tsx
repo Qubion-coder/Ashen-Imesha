@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, MapPin, Calendar, Clock } from "lucide-react";
+import { Sparkles, MapPin, Calendar, Clock, ChevronDown } from "lucide-react";
 import { getGuestNameFromPath, RSVP_SCRIPT_URL } from "./weddingConfig";
 
 /**
@@ -582,26 +582,32 @@ export default function WeddingInvitation() {
                 </div>
               </motion.div>
 
-              <motion.div
+              {/* Scroll Down cue */}
+              <motion.button
+                type="button"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 2.2, duration: 1 }}
-                className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer z-20 group"
+                onClick={() => document.getElementById("wedding-details")?.scrollIntoView({ behavior: "smooth" })}
+                aria-label="Scroll down to the wedding details"
+                className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer z-20 group"
               >
-                <span className="text-[8px] md:text-[9px] uppercase tracking-widest text-[#A85A70] font-bold">Begin</span>
-                <div className="w-px h-10 md:h-12 relative overflow-hidden bg-white/60">
-                  <motion.div
-                    animate={{ y: [-40, 60] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                    className="w-full h-8 bg-[#C77489]"
-                  />
-                </div>
-              </motion.div>
+                <span className="text-[8px] md:text-[10px] uppercase tracking-[0.35em] text-theme-700 font-bold px-3 py-1 rounded-full bg-white/70 backdrop-blur-sm border border-theme-200">
+                  Scroll Down
+                </span>
+                <motion.span
+                  animate={{ y: [0, 6, 0] }}
+                  transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+                  className="flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/80 border border-lavender-200 shadow-sm text-lavender-600 group-hover:bg-lavender-50 transition-colors"
+                >
+                  <ChevronDown className="w-5 h-5" />
+                </motion.span>
+              </motion.button>
 
             </section>
 
             {/* Wedding Details Section */}
-            <section className="cv-auto py-24 md:py-32 w-full flex flex-col items-center px-4 relative">
+            <section id="wedding-details" className="cv-auto py-24 md:py-32 w-full flex flex-col items-center px-4 relative">
               <div className="section-floral-overlay absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
                 {/* Pastel Orchid Corners */}
                 <InviteImage src={flowerCornerImage} className="absolute -left-16 -top-16 w-[280px] md:w-[450px] h-auto opacity-40 object-contain -rotate-90" alt="" />

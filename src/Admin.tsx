@@ -28,10 +28,14 @@ Please view our wedding invitation and all the event details through the link be
 
 ${link}
 
+Once you click the link, your wedding invitation will open. Please scroll down through the invitation to view all the event details and information. 💌
+
+Kindly confirm your attendance (RSVP) by 25th of November. We would greatly appreciate it if you could let us know whether you will be joining us on our special day before this date. ❤️
+
 Your presence would truly mean the world to us, and we would be honored to celebrate this beautiful moment together.
 
 With love,
-❤️ ${GROOM_NAME} & ${BRIDE_NAME}`;
+${GROOM_NAME} & ${BRIDE_NAME}❤️`;
 }
 
 async function copyText(text: string) {
